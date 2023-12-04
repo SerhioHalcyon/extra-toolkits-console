@@ -7,8 +7,8 @@ use App\Repositories\{{ repositoryClass }};
 class {{ class }} extends Service
 {
     public function __construct(
-            private {{ repositoryClass }} ${{ repositoryVariable }},
-        ) {
-            //
-        }
+        private {{ repositoryClass }} ${{ repositoryVariable }},
+    ) {
+        //
+    }
 }
