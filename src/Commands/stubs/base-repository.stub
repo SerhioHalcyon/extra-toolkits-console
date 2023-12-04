@@ -1,0 +1,62 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Model;
+
+abstract class Repository
+{
+    protected readonly string $modelClass;
+
+    public function __construct()
+    {
+        $modelName = \Str::replace('Repository', '', class_basename($this));
+
+        $this->modelClass = 'App\\Models\\' . $modelName;
+    }
+
+    public function find(int $id): Model
+    {
+        $model = $this->modelClass::findOrFail($id);
+
+        return $model;
+    }
+
+    public function create(array $data): Model
+    {
+        $model = $this->modelClass::create($data);
+
+        return $model;
+    }
+
+    public function insert(array $data): bool
+    {
+        $isInsert = $this->modelClass::insert($data);
+
+        return $isInsert;
+    }
+
+    public function update(Model $model, array $data): Model
+    {
+        if (get_class($model) !== $this->modelClass) {
+            throw new \InvalidArgumentException('Invalid model given');
+        }
+
+        $model->fill($data);
+
+        if ($model->isDirty()) {
+            $model->save();
+        }
+
+        return $model;
+    }
+
+    public function delete(Model $model): void
+    {
+        if (get_class($model) !== $this->modelClass) {
+            throw new \InvalidArgumentException('Invalid model given');
+        }
+
+        $model->delete();
+    }
+}
